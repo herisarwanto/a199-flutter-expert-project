@@ -1,8 +1,10 @@
 import 'package:ditonton/domain/entities/movie.dart';
 import 'package:ditonton/domain/entities/movie_detail.dart';
+import 'package:ditonton/domain/entities/video.dart';
 import 'package:ditonton/domain/usecases/get_movie_detail.dart';
 import 'package:ditonton/domain/usecases/get_movie_recommendations.dart';
 import 'package:ditonton/common/state_enum.dart';
+import 'package:ditonton/domain/usecases/get_movie_video.dart';
 import 'package:ditonton/domain/usecases/get_watchlist_status.dart';
 import 'package:ditonton/domain/usecases/remove_watchlist.dart';
 import 'package:ditonton/domain/usecases/save_watchlist.dart';
@@ -18,6 +20,7 @@ class MovieDetailNotifier extends ChangeNotifier {
   final GetWatchListStatus getWatchListStatus;
   final SaveWatchlist saveWatchlist;
   final RemoveWatchlist removeWatchlist;
+  final GetMovieVideo getMovieVideo;
 
   MovieDetailNotifier({
     required this.getMovieDetail,
@@ -25,6 +28,7 @@ class MovieDetailNotifier extends ChangeNotifier {
     required this.getWatchListStatus,
     required this.saveWatchlist,
     required this.removeWatchlist,
+    required this.getMovieVideo,
   });
 
   late MovieDetail _movie;
@@ -39,6 +43,12 @@ class MovieDetailNotifier extends ChangeNotifier {
   RequestState _recommendationState = RequestState.Empty;
   RequestState get recommendationState => _recommendationState;
 
+  List<Video> _movieVideo = [];
+  List<Video> get movieVideo => _movieVideo;
+
+  RequestState _movieVideoState = RequestState.Empty;
+  RequestState get movieVideoState => _movieVideoState;
+
   String _message = '';
   String get message => _message;
 
@@ -50,6 +60,8 @@ class MovieDetailNotifier extends ChangeNotifier {
     notifyListeners();
     final detailResult = await getMovieDetail.execute(id);
     final recommendationResult = await getMovieRecommendations.execute(id);
+    final movieVideoResult = await getMovieVideo.execute(id);
+
     detailResult.fold(
       (failure) {
         _movieState = RequestState.Error;
@@ -70,6 +82,17 @@ class MovieDetailNotifier extends ChangeNotifier {
             _movieRecommendations = movies;
           },
         );
+
+        movieVideoResult.fold(
+                (failure) {
+                  _movieVideoState = RequestState.Error;
+                  _message = failure.message;
+                },
+                (video) {
+                  _movieVideoState = RequestState.Loaded;
+                  _movieVideo = video;
+                });
+
         _movieState = RequestState.Loaded;
         notifyListeners();
       },

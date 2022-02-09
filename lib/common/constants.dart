@@ -4,12 +4,16 @@ import 'package:google_fonts/google_fonts.dart';
 const String BASE_IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
 
 // colors
-const Color kRichBlack = Color(0xFF000814);
+// const Color kRichBlack = Color(0xFF000814);
 const Color kOxfordBlue = Color(0xFF001D3D);
 const Color kPrussianBlue = Color(0xFF003566);
-const Color kMikadoYellow = Color(0xFFffc300);
+// const Color kMikadoYellow = Color(0xFFffc300);
 const Color kDavysGrey = Color(0xFF4B5358);
 const Color kGrey = Color(0xFF303030);
+
+const Color kRichBlack = Color(0xFF151C26);
+const Color kMikadoYellow = Color(0xFFF4C10F);
+const Color titleColor = Color(0xFF5A606B);
 
 // text style
 final TextStyle kHeading5 =
@@ -31,9 +35,7 @@ final kTextTheme = TextTheme(
 
 const kColorScheme = ColorScheme(
   primary: kMikadoYellow,
-  primaryVariant: kMikadoYellow,
   secondary: kPrussianBlue,
-  secondaryVariant: kPrussianBlue,
   surface: kRichBlack,
   background: kRichBlack,
   error: Colors.red,

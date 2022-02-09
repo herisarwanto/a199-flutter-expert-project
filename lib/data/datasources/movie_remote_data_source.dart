@@ -4,6 +4,8 @@ import 'package:ditonton/data/models/movie_detail_model.dart';
 import 'package:ditonton/data/models/movie_model.dart';
 import 'package:ditonton/data/models/movie_response.dart';
 import 'package:ditonton/common/exception.dart';
+import 'package:ditonton/data/models/video_model.dart';
+import 'package:ditonton/data/models/video_response.dart';
 import 'package:http/http.dart' as http;
 
 abstract class MovieRemoteDataSource {
@@ -13,10 +15,12 @@ abstract class MovieRemoteDataSource {
   Future<MovieDetailResponse> getMovieDetail(int id);
   Future<List<MovieModel>> getMovieRecommendations(int id);
   Future<List<MovieModel>> searchMovies(String query);
+  Future<List<VideoModel>> getMovieVideo(int id);
 }
 
 class MovieRemoteDataSourceImpl implements MovieRemoteDataSource {
-  static const API_KEY = 'api_key=2174d146bb9c0eab47529b2e77d6b526';
+  // static const API_KEY = 'api_key=2174d146bb9c0eab47529b2e77d6b526'; //dcdg apikey
+  static const API_KEY = 'api_key=b21a6d5212047b8858d6efd08a5f777b';
   static const BASE_URL = 'https://api.themoviedb.org/3';
 
   final http.Client client;
@@ -30,6 +34,17 @@ class MovieRemoteDataSourceImpl implements MovieRemoteDataSource {
 
     if (response.statusCode == 200) {
       return MovieResponse.fromJson(json.decode(response.body)).movieList;
+    } else {
+      throw ServerException();
+    }
+  }
+
+  @override
+  Future<List<VideoModel>> getMovieVideo(int id) async {
+    final response = await client.get(Uri.parse('$BASE_URL/movie/$id/videos?$API_KEY'));
+
+    if (response.statusCode == 200) {
+      return VideoResponse.fromJson(json.decode(response.body)).videoList;
     } else {
       throw ServerException();
     }
